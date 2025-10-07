@@ -1,5 +1,5 @@
 - name: Deploy Flappy Bird game to web server
-  hosts: web server
+  hosts: webserver
   become: true
   tasks:
     - name: Copy Flappy Bird files to Nginx web root

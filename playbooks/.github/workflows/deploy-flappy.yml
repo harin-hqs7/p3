@@ -1,0 +1,16 @@
+- name: Deploy Flappy Bird game to web server
+  hosts: webserver
+  become: true
+  tasks:
+    - name: Copy Flappy Bird files to Nginx web root
+      copy:
+        src: ../files/flappybird/
+        dest: /var/www/html/
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Restart Nginx service
+      service:
+        name: nginx
+        state: restarted

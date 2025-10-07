@@ -2,10 +2,11 @@
   hosts: all
   become: true
   tasks:
-    - name: Copy Flappy Bird files to Nginx web root
+   - name: Copy Flappy Bird files from remote
       copy:
-        src: ../files/flappybird/
-        dest: /var/www/html/
+      src: /home/awx/flappybird/
+       dest: /var/www/html/
+       remote_src: yes
         owner: www-data
         group: www-data
         mode: '0755'

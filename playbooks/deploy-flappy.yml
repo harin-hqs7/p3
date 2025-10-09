@@ -1,17 +1,39 @@
-- name: Deploy Flappy Bird game to web server
+---
+- name: Deploy Flappy Bird Web Game
   hosts: webserver
-  become: true
+  become: yes
+
+  vars:
+    deploy_path: /var/www/html/flappybird
+    repo_url: "https://github.com/harin-hqs7/flappy.git"
+
   tasks:
-    - name: Copy Flappy Bird files to Nginx web root
-      copy:
-        src: /home/awx/flappybird/
-        dest: /var/www/html/
+    - name: Pastikan Nginx terinstall
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Hapus folder lama Flappy Bird jika ada
+      file:
+        path: "{{ deploy_path }}"
+        state: absent
+
+    - name: Clone repository Flappy Bird dari GitHub
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ deploy_path }}"
+        version: main
+
+    - name: Ubah kepemilikan folder
+      file:
+        path: "{{ deploy_path }}"
         owner: www-data
         group: www-data
-        mode: '0755'
-        remote_src: yes
+        recurse: yes
 
-    - name: Restart Nginx service
+    - name: Pastikan Nginx aktif dan berjalan
       service:
         name: nginx
-        state: restarted
+        state: started
+        enabled: yes
